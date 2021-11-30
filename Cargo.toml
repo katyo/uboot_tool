@@ -1,0 +1,49 @@
+[package]
+name = "uboot_tool"
+description = "IP Camera uboot tool"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+slab = "0.4"
+fxhash = "0.2"
+indexmap = "1"
+anyhow = "1"
+educe = "0.4"
+nom = "7"
+pin-project-lite = "0.2"
+async-tftp = "0.3"
+if-addrs = "0.6"
+ipnetwork = "0.18"
+crc32fast = "1"
+
+futures-core = "0.3"
+futures-util = "0.3"
+
+#tokio-icmp-echo = "0.4"
+
+[dependencies.futures]
+version = "0.3"
+
+[dependencies.tokio]
+version = "1"
+features = ["macros", "rt", "fs", "time", "io-util", "sync"]
+
+[dependencies.tokio-serial]
+version = "5"
+
+[dependencies.tokio-util]
+version = "0.6"
+features = ["compat"]
+
+[dependencies.tokio-stream]
+version = "0.1"
+
+[dependencies.structopt]
+version = "0.3"
+features = ["paw"]
+
+[dependencies.paw]
+version = "1"
