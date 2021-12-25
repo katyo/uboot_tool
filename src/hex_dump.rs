@@ -11,8 +11,7 @@ impl HexDump {
     pub fn parse_line(src: impl AsRef<str>) -> Result<Self> {
         use crate::parse_utils::{hex_u64, hex_u8};
         use nom::{
-            bytes::complete::take,
-            character::complete::{char, space0, space1},
+            character::complete::{char, space0},
             combinator::map,
             multi::separated_list0,
             sequence::tuple,

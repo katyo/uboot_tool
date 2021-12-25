@@ -55,7 +55,7 @@ pub fn hex_u64_0x(input: &str) -> IResult<&str, u64> {
 
 /// Parse decimal number as u64
 pub fn dec_u64(input: &str) -> IResult<&str, u64> {
-    fold_many1(hex_dig, || 0, |val, dig| val * 10 + dig as u64)(input)
+    fold_many1(dec_dig, || 0, |val, dig| val * 10 + dig as u64)(input)
 }
 
 /// Parse optional units to get multiplier

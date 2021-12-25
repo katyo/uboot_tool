@@ -1,4 +1,8 @@
-use std::{net::IpAddr, path::PathBuf};
+use std::path::PathBuf;
+
+#[cfg(feature = "tftp")]
+use std::net::IpAddr;
+
 use structopt::StructOpt;
 use uboot_tool::{Result, UBootClient};
 
@@ -8,15 +12,20 @@ pub struct Args {
     /// Serial port
     #[structopt(short, long, env = "SERIAL_PORT")]
     pub port: Option<String>,
+
     /// Baud rate
     #[structopt(short, long, env = "SERIAL_BAUD", default_value = "115200")]
     pub baud: u32,
+
     /// Path for backup and restore
     #[structopt(short = "f", long, env = "FILE_PATH", parse(from_os_str))]
     pub path: Option<PathBuf>,
+
+    #[cfg(feature = "tftp")]
     /// Ip address of device
     #[structopt(short, long, env = "IP_ADDRESS")]
     pub ip: Option<IpAddr>,
+
     /// Command
     #[structopt(subcommand)]
     pub command: Cmd,
@@ -26,14 +35,20 @@ pub struct Args {
 pub enum Cmd {
     /// Show available serial ports
     Ports,
+
+    #[cfg(feature = "tftp")]
     /// Show available networks
     Networks,
+
     /// Stop autoboot when device connected
     Login,
+
     /// Get system info
     Info,
+
     /// Backup environment variables to file
     DumpEnv,
+
     /// Backup firmware partitions to file
     DumpMtd {
         /// Parts to be dumped (all by default)
@@ -62,6 +77,7 @@ impl Args {
 
     //pub fn file_name(&self, name: AsRef<>)
 
+    #[cfg(feature = "tftp")]
     pub fn get_ip(&self) -> Result<std::net::IpAddr> {
         let ip = self
             .ip
@@ -161,6 +177,8 @@ async fn run(args: Args) -> Result<()> {
                 println!("{}", port);
             }
         }
+
+        #[cfg(feature = "tftp")]
         Cmd::Networks => {
             for (name, networks) in UBootClient::networks()? {
                 println!("{}:", name);
@@ -173,12 +191,14 @@ async fn run(args: Args) -> Result<()> {
                 println!("Device IP: {}", ip);
             }
         }
+
         Cmd::Login => {
             let mut client = args.uboot_client()?;
             let prompt = client.shell_presence().await?;
             let prompt = core::str::from_utf8(&prompt)?;
             println!("prompt: {}", prompt);
         }
+
         Cmd::Info => {
             let mut client = args.uboot_client()?;
             let _prompt = client.shell_presence().await?;
@@ -217,6 +237,7 @@ async fn run(args: Args) -> Result<()> {
                 println!("\ttotal=\t\t{:#08x}", total);
             }
         }
+
         Cmd::DumpEnv => {
             use tokio::io::AsyncWriteExt;
 
@@ -234,6 +255,7 @@ async fn run(args: Args) -> Result<()> {
                 file.write_all(b"\n").await?;
             }
         }
+
         Cmd::DumpMtd { part } => {
             use tokio::io::AsyncWriteExt;
 
@@ -295,6 +317,7 @@ async fn run(args: Args) -> Result<()> {
             }
         }
     }
+
     Ok(())
 }
 

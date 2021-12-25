@@ -1,0 +1,29 @@
+[package]
+name = "uboot_tool_cli"
+description = "IP Camera U-Boot tool Command-Line interface"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1"
+
+[dependencies.uboot_tool]
+path = ".."
+version = "0.1.0"
+
+[dependencies.tokio]
+version = "1"
+features = ["macros", "rt", "fs"]
+
+[dependencies.structopt]
+version = "0.3"
+features = ["paw"]
+
+[dependencies.paw]
+version = "1"
+
+[features]
+default = []
+tftp = ["uboot_tool/tftp"]
